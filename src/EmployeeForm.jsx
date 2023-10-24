@@ -91,22 +91,23 @@ const EmployeeForm = () => {
             // setErrors({});
             document.getElementById('employeeForm').reset();
             console.table(dataContext);
+
+            const toastTrigger = document.getElementById('submitButton')
+            const toastLiveExample = document.getElementById('liveToast')
+
+            if (toastTrigger) {
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+                toastTrigger.addEventListener('click', () => {
+                    toastBootstrap.show()
+                })
+            }
         }
 
     }
 
-    const toastTrigger = document.getElementById('submitButton')
-    const toastLiveExample = document.getElementById('liveToast')
-
-    if (toastTrigger) {
-        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-        toastTrigger.addEventListener('click', () => {
-            toastBootstrap.show()
-        })
-    }
 
     return (
-        <form id='employeeForm' onSubmit={onSubmitHandler} className='container'>
+        <form id='employeeForm' onSubmit={onSubmitHandler} className='my-2 mx-4' style={{width: "720px"}}>
             <div className='form-group mb-2'>
                 <label htmlFor="firstNameInput">First Name</label>
                 <input type='text' name='firstName' className={'form-control ' + valid.firstName} id='firstNameInputId' placeholder='First Name' onBlur={onBlurHandler} aria-describedby='firstnameFeedback'  />
@@ -144,16 +145,16 @@ const EmployeeForm = () => {
             </div>
 
 
-            <div className='form-group mb-2'>
+            <div className='form-group mb-2 d-grid'>
                 <button type='submit' id='submitButton' className='btn btn-primary' onClick={(e) => {console.log(e)}}>Submit</button>
             </div>
             <div className="toast-container position-fixed top-0 end-0 p-3">
               <div id="liveToast" className="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                  <div class="d-flex">
-                    <div class="toast-body">
+                  <div className="d-flex">
+                    <div className="toast-body">
                       Employee Record Saved
                     </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    <button type="button" className="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                   </div>
               </div>
             </div>
