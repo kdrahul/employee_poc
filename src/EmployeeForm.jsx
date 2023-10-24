@@ -1,15 +1,20 @@
-import React, {  useState } from 'react';
+import React, {  useContext, useState } from 'react';
+import { DataContext } from './Context';
+import bootstrap from 'bootstrap/dist/js/bootstrap';
 
 const EmployeeForm = () => {
 
-    const [values, setValues] = useState({
+    const dataContext = useContext(DataContext);
+    const employee = {
         firstName: '',
         lastName: '',
         email: '',
         dob: '',
         gender: '',
         address: '',
-    });
+    };
+
+    const [values, setValues] = useState(employee);
 
     const [errors, setErrors] = useState({});
     const [valid, setValid] = useState({});
@@ -42,7 +47,7 @@ const EmployeeForm = () => {
         } else {
             val.gender = 'is-valid';
         }
-        if(values.address === '') {
+        if(values.address === '' ) {
             val.address = 'is-invalid';
             err.address = "Tell us where you're from";
         } else {
@@ -61,8 +66,11 @@ const EmployeeForm = () => {
         console.table(errors);
         console.table(valid);
 
-        return false;
+        if(Object.keys(err).length > 0){
+            return false
+        }
 
+        return true;
     }
 
     const onBlurHandler = (e) => {
@@ -76,12 +84,29 @@ const EmployeeForm = () => {
     const onSubmitHandler = (e) => {
         e.preventDefault();
 
-        const isValid = validateForm();
-        console.log(isValid);
+        if(validateForm() === true && values.firstName !== null) {
+            dataContext.push(values);
+            setValid({});
+            setValues(employee);
+            // setErrors({});
+            document.getElementById('employeeForm').reset();
+            console.table(dataContext);
+        }
+
+    }
+
+    const toastTrigger = document.getElementById('submitButton')
+    const toastLiveExample = document.getElementById('liveToast')
+
+    if (toastTrigger) {
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+        toastTrigger.addEventListener('click', () => {
+            toastBootstrap.show()
+        })
     }
 
     return (
-        <form onSubmit={onSubmitHandler} className='container'>
+        <form id='employeeForm' onSubmit={onSubmitHandler} className='container'>
             <div className='form-group mb-2'>
                 <label htmlFor="firstNameInput">First Name</label>
                 <input type='text' name='firstName' className={'form-control ' + valid.firstName} id='firstNameInputId' placeholder='First Name' onBlur={onBlurHandler} aria-describedby='firstnameFeedback'  />
@@ -120,8 +145,19 @@ const EmployeeForm = () => {
 
 
             <div className='form-group mb-2'>
-                <button type='submit' className='btn btn-primary' onClick={(e) => {console.log(e)}}>Submit</button>
+                <button type='submit' id='submitButton' className='btn btn-primary' onClick={(e) => {console.log(e)}}>Submit</button>
             </div>
+            <div className="toast-container position-fixed top-0 end-0 p-3">
+              <div id="liveToast" className="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                  <div class="d-flex">
+                    <div class="toast-body">
+                      Employee Record Saved
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                  </div>
+              </div>
+            </div>
+
 
         </form>
     );
